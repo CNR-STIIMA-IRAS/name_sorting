@@ -4,16 +4,37 @@
 #include <ros/console.h>
 namespace name_sorting
 {
+  /**
+   * \brief 
+   * permutationName, reorder vectors. 
+   * *order_names* names in the desired order
+   * *names* current order of names, 
+   * *position, *velocity*, *effort* vectors to be reordered
+   */
   bool permutationName( const std::vector<std::string>& order_names, 
                         std::vector<std::string>& names,
                         std::vector<double>& position, 
                         std::vector<double>& velocity, 
                         std::vector<double>& effort);
   
+  /**
+   * \brief 
+   * permutationName, reorder vectors. 
+   * *order_names* names in the desired order
+   * *names* current order of names, 
+   * *position, *velocity* vectors to be reordered
+   */
   bool permutationName( const std::vector<std::string>& order_names, 
                         std::vector<std::string>& names,
                         std::vector<double>& position, 
                         std::vector<double>& velocity);
+  /**
+   * \brief 
+   * permutationName, reorder vectors. 
+   * *order_names* names in the desired order
+   * *names* current order of names, 
+   * *position vector to be reordered
+   */
   bool permutationName( const std::vector<std::string>& order_names, 
                         std::vector<std::string>& names,
                         std::vector<double>& position);
