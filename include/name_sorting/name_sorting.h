@@ -9,35 +9,35 @@ namespace name_sorting
    * permutationName, reorder vectors. 
    * *order_names* names in the desired order
    * *names* current order of names, 
-   * *position, *velocity*, *effort* vectors to be reordered
+   * *vector1*, *vector2*, *vector3* vectors to be reordered
    */
   bool permutationName( const std::vector<std::string>& order_names, 
                         std::vector<std::string>& names,
-                        std::vector<double>& position, 
-                        std::vector<double>& velocity, 
-                        std::vector<double>& effort);
+                        std::vector<double>& vector1,
+                        std::vector<double>& vector2,
+                        std::vector<double>& vector3);
   
   /**
    * \brief 
    * permutationName, reorder vectors. 
    * *order_names* names in the desired order
    * *names* current order of names, 
-   * *position, *velocity* vectors to be reordered
+   * *vector1*, *vector2* vectors to be reordered
    */
-  bool permutationName( const std::vector<std::string>& order_names, 
+  bool permutationName(const std::vector<std::string>& order_names,
                         std::vector<std::string>& names,
-                        std::vector<double>& position, 
-                        std::vector<double>& velocity);
+                        std::vector<double>& vector1,
+                        std::vector<double>& vector2);
   /**
    * \brief 
    * permutationName, reorder vectors. 
    * *order_names* names in the desired order
    * *names* current order of names, 
-   * *position vector to be reordered
+   * *vector1* vector to be reordered
    */
-  bool permutationName( const std::vector<std::string>& order_names, 
+  bool permutationName(const std::vector<std::string>& order_names,
                         std::vector<std::string>& names,
-                        std::vector<double>& position);
+                        std::vector<double>& vector1);
   
 
   
