@@ -48,7 +48,14 @@ namespace name_sorting
           }
           if (iNames==(names.size()-1))
           {
+            std::stringstream ss;
             ROS_ERROR("The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",order_names.at(iOrder).c_str());
+            ss << "Sorted Names: <";
+	    for( size_t i=0;i<order_names.size();i++)  ss << order_names.at(i) <<",";
+            ss << "> vs Names to be ordered: <";
+            for( size_t i=0;i<names.size();i++)  ss << names.at(i) <<",";
+            ss <<">";
+            ROS_ERROR_STREAM( ss.str() );
             return false;
           }
         }
