@@ -51,9 +51,11 @@ namespace name_sorting
             std::stringstream ss;
             ROS_ERROR("The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",order_names.at(iOrder).c_str());
             ss << "Sorted Names: <";
-	    for( size_t i=0;i<order_names.size();i++)  ss << order_names.at(i) <<",";
+			for( size_t i=0;i<order_names.size();i++)  
+				ss << order_names.at(i) <<",";
             ss << "> vs Names to be ordered: <";
-            for( size_t i=0;i<names.size();i++)  ss << names.at(i) <<",";
+            for( size_t i=0;i<names.size();i++)  
+				ss << names.at(i) <<",";
             ss <<">";
             ROS_ERROR_STREAM( ss.str() );
             return false;
@@ -71,17 +73,17 @@ namespace name_sorting
   {
     if (names.size()<order_names.size())
     {
-      ROS_ERROR("names size (%zu) is smaller than order_names size (%zu)",names.size(),order_names.size());
+	  ROS_ERROR("The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)",names.size(),order_names.size());
       return false;
     }
     if (names.size()!=position.size())
     {
-      ROS_ERROR("name size is %zu, position size is %zu",names.size(),position.size());
+      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while position size is %zu",names.size(),position.size());
       return false;
     }
     if (names.size()!=velocity.size())
     {
-      ROS_ERROR("name size is %zu, velocity size is %zu",names.size(),velocity.size());
+      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while velocity size is %zu",names.size(),velocity.size());
       return false;
     }
     
@@ -100,26 +102,36 @@ namespace name_sorting
           }
           if (iNames==(names.size()-1))
           {
-            ROS_ERROR("Joint %s missing",order_names.at(iOrder).c_str());
+			std::stringstream ss;
+            ROS_ERROR("The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",order_names.at(iOrder).c_str());
+            ss << "Sorted Names: <";
+			for( size_t i=0;i<order_names.size();i++)  
+				ss << order_names.at(i) <<",";
+            ss << "> vs Names to be ordered: <";
+            for( size_t i=0;i<names.size();i++)  
+				ss << names.at(i) <<",";
+            ss <<">";
+            ROS_ERROR_STREAM( ss.str() );
+
             return false;
           }
         }
       }
     }
     return true;
-  }                                
+  }
   bool permutationName(  const std::vector<std::string>& order_names, 
                          std::vector<std::string>& names,
                          std::vector<double>& position)
   {
     if (names.size()<order_names.size())
     {
-      ROS_ERROR("names size (%zu) is smaller than order_names size (%zu)",names.size(),order_names.size());
+      ROS_ERROR("The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)",names.size(),order_names.size());
       return false;
     }
     if (names.size()!=position.size())
     {
-      ROS_ERROR("name size is %zu, position size is %zu",names.size(),position.size());
+      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while position size is %zu",names.size(),position.size());
       return false;
     }
     
@@ -137,7 +149,16 @@ namespace name_sorting
           }
           if (iNames==(names.size()-1))
           {
-            ROS_ERROR("Joint %s missing",order_names.at(iOrder).c_str());
+            std::stringstream ss;
+            ROS_ERROR("The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",order_names.at(iOrder).c_str());
+            ss << "Sorted Names: <";
+			for( size_t i=0;i<order_names.size();i++)  
+				ss << order_names.at(i) <<",";
+            ss << "> vs Names to be ordered: <";
+            for( size_t i=0;i<names.size();i++)  
+				ss << names.at(i) <<",";
+            ss <<">";
+            ROS_ERROR_STREAM( ss.str() );
             return false;
           }
         }
