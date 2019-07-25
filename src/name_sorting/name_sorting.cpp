@@ -11,22 +11,22 @@ namespace name_sorting
   {
     if (names.size()<order_names.size())
     {
-      ROS_ERROR("names size (%zu) is smaller than order_names size (%zu)",names.size(),order_names.size());
+      ROS_ERROR("The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)",names.size(),order_names.size());
       return false;
     }
     if (names.size()!=position.size())
     {
-      ROS_ERROR("name size is %zu, position size is %zu",names.size(),position.size());
+      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while position size is %zu",names.size(),position.size());
       return false;
     }
     if (names.size()!=velocity.size())
     {
-      ROS_ERROR("name size is %zu, velocity size is %zu",names.size(),velocity.size());
+      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while velocity size is %zu",names.size(),velocity.size());
       return false;
     }
     if (names.size()!=effort.size())
     {
-      ROS_ERROR("name size is %zu, effort size is %zu",names.size(),effort.size());
+      ROS_ERROR("Inut Mismatch. The size of the vecotr of the names is %zu, while effort size is %zu",names.size(),effort.size());
       return false;
     }
     
@@ -48,7 +48,7 @@ namespace name_sorting
           }
           if (iNames==(names.size()-1))
           {
-            ROS_ERROR("Joint %s missing",order_names.at(iOrder).c_str());
+            ROS_ERROR("The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",order_names.at(iOrder).c_str());
             return false;
           }
         }
