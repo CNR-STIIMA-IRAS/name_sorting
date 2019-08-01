@@ -107,7 +107,7 @@ namespace name_sorting
           if (iNames==(names.size()-1))
           {
             ROS_ERROR("Joint %s missing",order_names.at(iOrder).c_str());
-
+            std::stringstream ss;
             ss << "Sorted Names: <";
             for( size_t i=0;i<order_names.size();i++)
               ss << order_names.at(i) <<",";
@@ -153,7 +153,7 @@ namespace name_sorting
           if (iNames==(names.size()-1))
           {
             ROS_ERROR("Joint %s missing",order_names.at(iOrder).c_str());
-
+            std::stringstream ss;
             ss << "Sorted Names: <";
             for( size_t i=0;i<order_names.size();i++)
               ss << order_names.at(i) <<",";
