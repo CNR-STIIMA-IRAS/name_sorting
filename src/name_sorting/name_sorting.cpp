@@ -7,26 +7,27 @@ namespace name_sorting
                          std::vector<std::string>& names,
                          std::vector<double>& position, 
                          std::vector<double>& velocity, 
-                         std::vector<double>& effort)
+                         std::vector<double>& effort, 
+                         const std::string whoaim)
   {
     if (names.size()<order_names.size())
     {
-      ROS_ERROR("The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)",names.size(),order_names.size());
+      ROS_ERROR("[ %s ]The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)", whoaim.c_str(),names.size(),order_names.size());
       return false;
     }
     if (names.size()!=position.size())
     {
-      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while position size is %zu",names.size(),position.size());
+      ROS_ERROR("[ %s ]Input Mismatch. The size of the vector of names is %zu, while position size is %zu", whoaim.c_str(),names.size(),position.size());
       return false;
     }
     if (names.size()!=velocity.size())
     {
-      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while velocity size is %zu",names.size(),velocity.size());
+      ROS_ERROR("[ %s ]Input Mismatch. The size of the vector of names is %zu, while velocity size is %zu", whoaim.c_str(),names.size(),velocity.size());
       return false;
     }
     if (names.size()!=effort.size())
     {
-      ROS_ERROR("Inut Mismatch. The size of the vecotr of the names is %zu, while effort size is %zu",names.size(),effort.size());
+      ROS_ERROR("[ %s ]Inut Mismatch. The size of the vecotr of the names is %zu, while effort size is %zu", whoaim.c_str(),names.size(),effort.size());
       return false;
     }
     
@@ -49,7 +50,7 @@ namespace name_sorting
           if (iNames==(names.size()-1))
           {
             std::stringstream ss;
-            ROS_ERROR("The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",order_names.at(iOrder).c_str());
+            ROS_ERROR("[ %s ]The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.", whoaim.c_str(),order_names.at(iOrder).c_str());
             ss << "Sorted Names: <";
 			for( size_t i=0;i<order_names.size();i++)  
 				ss << order_names.at(i) <<",";
@@ -69,21 +70,22 @@ namespace name_sorting
   bool permutationName(  const std::vector<std::string>& order_names, 
                          std::vector<std::string>& names,
                          std::vector<double>& position, 
-                         std::vector<double>& velocity)
+                         std::vector<double>& velocity, 
+                         const std::string whoaim)
   {
     if (names.size()<order_names.size())
     {
-	  ROS_ERROR("The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)",names.size(),order_names.size());
+	  ROS_ERROR("[ %s ]The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)", whoaim.c_str(),names.size(),order_names.size());
       return false;
     }
     if (names.size()!=position.size())
     {
-      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while position size is %zu",names.size(),position.size());
+      ROS_ERROR("[ %s ]Input Mismatch. The size of the vector of names is %zu, while position size is %zu", whoaim.c_str(),names.size(),position.size());
       return false;
     }
     if (names.size()!=velocity.size())
     {
-      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while velocity size is %zu",names.size(),velocity.size());
+      ROS_ERROR("[ %s ]Input Mismatch. The size of the vector of names is %zu, while velocity size is %zu", whoaim.c_str(),names.size(),velocity.size());
       return false;
     }
     
@@ -103,7 +105,7 @@ namespace name_sorting
           if (iNames==(names.size()-1))
           {
 			std::stringstream ss;
-            ROS_ERROR("The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",order_names.at(iOrder).c_str());
+            ROS_ERROR("[ %s ]The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.", whoaim.c_str(),order_names.at(iOrder).c_str());
             ss << "Sorted Names: <";
 			for( size_t i=0;i<order_names.size();i++)  
 				ss << order_names.at(i) <<",";
@@ -122,16 +124,17 @@ namespace name_sorting
   }
   bool permutationName(  const std::vector<std::string>& order_names, 
                          std::vector<std::string>& names,
-                         std::vector<double>& position)
+                         std::vector<double>& position, 
+                         const std::string whoaim)
   {
     if (names.size()<order_names.size())
     {
-      ROS_ERROR("The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)",names.size(),order_names.size());
+      ROS_ERROR("[ %s ] The vector of names to be sorted has size %zu, that is smaller than vector of the sorted names (%zu)", whoaim.c_str(), names.size(), order_names.size());
       return false;
     }
     if (names.size()!=position.size())
     {
-      ROS_ERROR("Input Mismatch. The size of the vector of names is %zu, while position size is %zu",names.size(),position.size());
+      ROS_ERROR("[ %s ] Input Mismatch. The size of the vector of names is %zu, while position size is %zu", whoaim.c_str(),names.size(),position.size());
       return false;
     }
     
@@ -150,7 +153,7 @@ namespace name_sorting
           if (iNames==(names.size()-1))
           {
             std::stringstream ss;
-            ROS_ERROR("The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",order_names.at(iOrder).c_str());
+            ROS_ERROR("[ %s ]The Joint '%s' that is in the vector of the sorted names, is missing in the vector to be sorted.",whoaim.c_str(),order_names.at(iOrder).c_str());
             ss << "Sorted Names: <";
 			for( size_t i=0;i<order_names.size();i++)  
 				ss << order_names.at(i) <<",";
