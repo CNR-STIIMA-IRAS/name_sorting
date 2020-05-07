@@ -73,7 +73,7 @@ inline bool append_trajectories(trajectory_msgs::JointTrajectory& trj, const tra
     return false;
 
 
-  ros::Duration end_of_original_trj=trj.points.back().time_from_start;
+  ros::Duration end_of_original_trj=trj.points.back().time_from_start+ros::Duration(0.01);
 
   for (const trajectory_msgs::JointTrajectoryPoint& pnt: sorted_trj_to_be_appended.points)
   {
