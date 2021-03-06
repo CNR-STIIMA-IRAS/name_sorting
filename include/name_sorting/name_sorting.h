@@ -17,7 +17,7 @@ bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<double>& position,
                       std::vector<double>& velocity,
                       std::vector<double>& effort,
-                      const std::string whoaim="");
+                      const std::string whoaim);
 
 
 /**
@@ -49,7 +49,7 @@ bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<std::string>& names,
                       std::vector<double>& position,
                       std::vector<double>& velocity,
-                      const std::string whoaim=""
+                      const std::string whoaim
                     );
 
 /**
@@ -77,7 +77,7 @@ bool permutationName( const std::vector<std::string>& order_names,
 bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<std::string>& names,
                       std::vector<double>& position,
-                      const std::string whoaim=""
+                      const std::string whoaim
                     );
 
 /**
