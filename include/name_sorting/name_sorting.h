@@ -35,7 +35,7 @@ bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<double>& position,
                       std::vector<double>& velocity,
                       std::vector<double>& effort,
-                      std::stringstream* report);
+                      std::stringstream* report=nullptr);
 
 /**
  * \brief
@@ -65,7 +65,7 @@ bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<std::string>& names,
                       std::vector<double>& position,
                       std::vector<double>& velocity,
-                      std::stringstream* report);
+                      std::stringstream* report=nullptr);
 /**
  * \brief
  * permutationName, reorder vectors.
@@ -91,7 +91,7 @@ bool permutationName( const std::vector<std::string>& order_names,
 bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<std::string>& names,
                       std::vector<double>& position,
-                      std::stringstream* report);
+                      std::stringstream* report=nullptr);
 
 }
 
