@@ -1,11 +1,11 @@
 
-#pragma once
-
 #include <ros/console.h>
 #include <Eigen/Core>
 #include <Eigen/LU>
 
 #include <name_sorting/sort_trajectories.h>
+
+// ----
 
 namespace trajectory_processing
 {

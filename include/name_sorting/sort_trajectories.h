@@ -1,6 +1,7 @@
 #ifndef NAME_SORTING__SORT_TRAJECTORIES_H
 #define NAME_SORTING__SORT_TRAJECTORIES_H
 
+// ----
 #include <trajectory_msgs/JointTrajectory.h>
 
 namespace trajectory_processing
