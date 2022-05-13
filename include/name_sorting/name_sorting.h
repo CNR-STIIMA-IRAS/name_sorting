@@ -1,7 +1,10 @@
-#ifndef name_sorting__201808101353
-#define name_sorting__201808101353
+#ifndef NAME_SORTING__NAME_SORTING_H
+#define NAME_SORTING__NAME_SORTING_H
 
-#include <ros/console.h>
+#include <string>
+#include <vector>
+#include <sstream>
+
 namespace name_sorting
 {
 /**
@@ -17,7 +20,7 @@ bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<double>& position,
                       std::vector<double>& velocity,
                       std::vector<double>& effort,
-                      const std::string whoaim);
+                      const std::string& whoami);
 
 
 /**
@@ -49,7 +52,7 @@ bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<std::string>& names,
                       std::vector<double>& position,
                       std::vector<double>& velocity,
-                      const std::string whoaim
+                      const std::string& whoami
                     );
 
 /**
@@ -77,7 +80,7 @@ bool permutationName( const std::vector<std::string>& order_names,
 bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<std::string>& names,
                       std::vector<double>& position,
-                      const std::string whoaim
+                      const std::string& whoami
                     );
 
 /**
@@ -93,7 +96,7 @@ bool permutationName( const std::vector<std::string>& order_names,
                       std::vector<double>& position,
                       std::stringstream* report=nullptr);
 
-}
+}  // namespace name_sorting
 
 
-#endif
+#endif  // NAME_SORTING__NAME_SORTING_H
