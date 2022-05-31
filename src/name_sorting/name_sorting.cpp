@@ -1,6 +1,7 @@
 #include <name_sorting/name_sorting.h>
 #include <ros/console.h>
 
+// ----
 namespace name_sorting
 {
 
