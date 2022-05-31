@@ -1,28 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(name_sorting)
 
-###################
-## PRELIMINARIES ##
-###################
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
-endif()
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cnrConfigMacros.cmake)
 
-if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 99)
-endif()
-
-IF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" LESS 3.0)
-  set(CMAKE_CXX_FLAGS "-std=c++11")
-ELSE()
-  # Default to C++14
-  if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 14)
-  endif()
-
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  set(CMAKE_CXX_EXTENSIONS OFF)
-endif()
+cnr_set_flags()
 ###################
 
 find_package(catkin REQUIRED COMPONENTS roscpp trajectory_msgs)
@@ -35,16 +16,13 @@ catkin_package(
   DEPENDS 
 )
 
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}/name_sorting.cpp src/${PROJECT_NAME}/sort_trajectories.cpp
-)
+              src/${PROJECT_NAME}/name_sorting.cpp src/${PROJECT_NAME}/sort_trajectories.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${EIGEN_LIBRARIES} Eigen3::Eigen)
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+cnr_target_compile_options(${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME} 
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
