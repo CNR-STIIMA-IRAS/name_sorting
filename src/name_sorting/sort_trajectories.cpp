@@ -108,7 +108,7 @@ void removeDuplicates(trajectory_msgs::JointTrajectory& trj)
     trj.points.erase(trj.points.begin()+iPnt);
   }
   return;
-};
+}
 
 bool computeAccelerationVelocity(trajectory_msgs::JointTrajectory& trj)
 {
