@@ -1,20 +1,17 @@
 
-#include <ros/console.h>
-#include <Eigen/Core>
-#include <Eigen/LU>
 
-#include <name_sorting/sort_trajectories.h>
 
+#include <name_sorting/sort_trajectories.hpp>
 // ----
 
 namespace trajectory_processing
 {
-bool sort_trajectory(const std::vector<std::string>& joint_names, const trajectory_msgs::JointTrajectory& trj, trajectory_msgs::JointTrajectory& sorted_trj)
+bool sort_trajectory(const std::vector<std::string>& joint_names, const trajectory_msgs::msg::JointTrajectory &trj, trajectory_msgs::msg::JointTrajectory &sorted_trj)
 {
   const std::vector<std::string>& names=trj.joint_names;
   if (names.size()!=joint_names.size())
   {
-    ROS_ERROR("Joint names dimensions are different");
+    RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Joint names dimensions are different");
     return false;
   }
   std::vector<int> order_idx(joint_names.size());
@@ -23,7 +20,7 @@ bool sort_trajectory(const std::vector<std::string>& joint_names, const trajecto
 
   for (unsigned int iOrder=0;iOrder<joint_names.size();iOrder++)
   {
-    ROS_DEBUG("index %u, original trajectory %s, sorted trajectory %s",iOrder,names.at(iOrder).c_str(),joint_names.at(iOrder).c_str());
+    RCLCPP_DEBUG( rclcpp::get_logger("rclcpp"), "index %u, original trajectory %s, sorted trajectory %s",iOrder,names.at(iOrder).c_str(),joint_names.at(iOrder).c_str());
     if (names.at(iOrder).compare(joint_names.at(iOrder)))
     {
       for (unsigned int iNames=0;iNames<names.size();iNames++)
@@ -31,12 +28,12 @@ bool sort_trajectory(const std::vector<std::string>& joint_names, const trajecto
         if (!joint_names.at(iOrder).compare(names.at(iNames)))
         {
           order_idx.at(iOrder)=iNames;
-          ROS_DEBUG("Joint %s (index %u) of original trajectory will be in position %u",names.at(iNames).c_str(),iOrder,iNames);
+          RCLCPP_DEBUG(rclcpp::get_logger("rclcpp"), "Joint %s (index %u) of original trajectory will be in position %u",names.at(iNames).c_str(),iOrder,iNames);
           break;
         }
         if (iNames==(names.size()-1))
         {
-          ROS_ERROR("Joint %s missing",joint_names.at(iOrder).c_str());
+          RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Joint %s missing",joint_names.at(iOrder).c_str());
           return false;
         }
       }
@@ -44,14 +41,14 @@ bool sort_trajectory(const std::vector<std::string>& joint_names, const trajecto
     else
     {
       order_idx.at(iOrder)=iOrder;
-      ROS_DEBUG("Joint %s (index %u) of original trajectory will be in position %u",names.at(iOrder).c_str(),iOrder,iOrder);
+      RCLCPP_DEBUG(rclcpp::get_logger("rclcpp"), "Joint %s (index %u) of original trajectory will be in position %u",names.at(iOrder).c_str(),iOrder,iOrder);
     }
   }
 
   sorted_trj.joint_names=joint_names;
   sorted_trj.header=trj.header;
 
-  for (const trajectory_msgs::JointTrajectoryPoint& pnt: trj.points)
+  for (const trajectory_msgs::msg::JointTrajectoryPoint& pnt: trj.points)
   {
     sorted_trj.points.push_back(pnt);
     for (unsigned int iOrder=0;iOrder<joint_names.size();iOrder++)
@@ -69,29 +66,34 @@ bool sort_trajectory(const std::vector<std::string>& joint_names, const trajecto
 }
 
 
-bool append_trajectories(trajectory_msgs::JointTrajectory& trj, const trajectory_msgs::JointTrajectory& trj_to_be_appended)
+bool append_trajectories(trajectory_msgs::msg::JointTrajectory& trj, const trajectory_msgs::msg::JointTrajectory& trj_to_be_appended)
 {
-  trajectory_msgs::JointTrajectory sorted_trj_to_be_appended;
+  trajectory_msgs::msg::JointTrajectory sorted_trj_to_be_appended;
   if (!sort_trajectory(trj.joint_names,trj_to_be_appended,sorted_trj_to_be_appended))
     return false;
 
 
-  ros::Duration end_of_original_trj=trj.points.back().time_from_start+ros::Duration(0.01);
-
-  for (const trajectory_msgs::JointTrajectoryPoint& pnt: sorted_trj_to_be_appended.points)
+  rclcpp::Duration delta(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(0.001)));
+  rclcpp::Duration end_of_original_trj(trj.points.back().time_from_start);
+  end_of_original_trj=end_of_original_trj+delta;
+  for (const trajectory_msgs::msg::JointTrajectoryPoint& pnt: sorted_trj_to_be_appended.points)
   {
     trj.points.push_back(pnt);
-    trj.points.back().time_from_start=trj.points.back().time_from_start+end_of_original_trj;
+    rclcpp::Duration t=pnt.time_from_start;
+    trj.points.back().time_from_start=t+end_of_original_trj;
   }
 
   return true;
 }
 
-void removeDuplicates(trajectory_msgs::JointTrajectory& trj)
+void removeDuplicates(trajectory_msgs::msg::JointTrajectory& trj)
 {
   for (unsigned int iPnt=1;iPnt<trj.points.size();iPnt++)
   {
-    if ((trj.points.at(iPnt).time_from_start.toSec()-trj.points.at(iPnt-1).time_from_start.toSec())>1e-6)
+    rclcpp::Duration t1=trj.points.at(iPnt-1).time_from_start;
+    rclcpp::Duration t2=trj.points.at(iPnt).time_from_start;
+
+    if ((t2.seconds()-t1.seconds())>1e-6)
     {
       break;
     }
@@ -104,17 +106,17 @@ void removeDuplicates(trajectory_msgs::JointTrajectory& trj)
       }
     }
 
-    ROS_FATAL("erasing point %u",iPnt);
+    RCLCPP_FATAL(rclcpp::get_logger("rclcpp"), "erasing point %u",iPnt);
     trj.points.erase(trj.points.begin()+iPnt);
   }
   return;
 }
 
-bool computeAccelerationVelocity(trajectory_msgs::JointTrajectory& trj)
+bool computeAccelerationVelocity(trajectory_msgs::msg::JointTrajectory& trj)
 {
   if (trj.points.size()<2)
   {
-    ROS_ERROR("trajectory should have at least 2 points");
+    RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "trajectory should have at least 2 points");
     return false;
   }
 
@@ -125,29 +127,43 @@ bool computeAccelerationVelocity(trajectory_msgs::JointTrajectory& trj)
   }
 
   for (unsigned int iPnt=1;iPnt<(trj.points.size());iPnt++)
-    trj.points.at(iPnt).time_from_start=ros::Duration(trj.points.at(iPnt-1).time_from_start.toSec()+std::max(1.0e-5,trj.points.at(iPnt).time_from_start.toSec()-trj.points.at(iPnt-1).time_from_start.toSec()));
+  {
+    rclcpp::Duration t1=trj.points.at(iPnt-1).time_from_start;
+    rclcpp::Duration t2=trj.points.at(iPnt).time_from_start;
+    double new_t=t1.seconds()+std::max(1.0e-5,t2.seconds()-t1.seconds());
+    rclcpp::Duration new_time(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(new_t)));
+    trj.points.at(iPnt).time_from_start=new_time;
+  }
 
   for  (unsigned int iAx=0;iAx<trj.points.at(0).positions.size();iAx++)
   {
 
     for (unsigned int iPnt=1;iPnt<(trj.points.size()-1);iPnt++)
-      trj.points.at(iPnt).velocities.at(iAx)=(trj.points.at(iPnt+1).positions.at(iAx)-trj.points.at(iPnt-1).positions.at(iAx))/(trj.points.at(iPnt+1).time_from_start.toSec()-trj.points.at(iPnt-1).time_from_start.toSec());
+    {
+      rclcpp::Duration t1=trj.points.at(iPnt-1).time_from_start;
+      rclcpp::Duration t2=trj.points.at(iPnt+1).time_from_start;
+      trj.points.at(iPnt).velocities.at(iAx)=(trj.points.at(iPnt+1).positions.at(iAx)-trj.points.at(iPnt-1).positions.at(iAx))/(t2.seconds()-t1.seconds());
+    }
 
     //compute accelerations
     for (unsigned int iPnt=1;iPnt<(trj.points.size()-1);iPnt++)
-      trj.points.at(iPnt).accelerations.at(iAx)=(trj.points.at(iPnt+1).velocities.at(iAx)-trj.points.at(iPnt-1).velocities.at(iAx))/(trj.points.at(iPnt+1).time_from_start.toSec()-trj.points.at(iPnt-1).time_from_start.toSec());
-
+    {
+      rclcpp::Duration t1=trj.points.at(iPnt-1).time_from_start;
+      rclcpp::Duration t2=trj.points.at(iPnt+1).time_from_start;
+      trj.points.at(iPnt).accelerations.at(iAx)=(trj.points.at(iPnt+1).velocities.at(iAx)-trj.points.at(iPnt-1).velocities.at(iAx))/(t2.seconds()-t1.seconds());
+    }
   }
 
   return true;
 }
 
-bool computeAccelerationVelocitySpline(trajectory_msgs::JointTrajectory& trj)
+bool computeAccelerationVelocitySpline(trajectory_msgs::msg::JointTrajectory& trj)
 {
+
 
   if (trj.points.size()<2)
   {
-    ROS_ERROR("trajectory should have at least 2 points");
+    RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "trajectory should have at least 2 points");
     return false;
   }
 
@@ -159,10 +175,13 @@ bool computeAccelerationVelocitySpline(trajectory_msgs::JointTrajectory& trj)
   }
 
   for (unsigned int iPnt=1;iPnt<(trj.points.size());iPnt++)
-    trj.points.at(iPnt).time_from_start = ros::Duration(trj.points.at(iPnt-1).time_from_start.toSec()
-                                        + std::max(1.0e-5
-                                                  , trj.points.at(iPnt).time_from_start.toSec()-trj.points.at(iPnt-1).time_from_start.toSec()));
-
+  {
+    rclcpp::Duration t1=trj.points.at(iPnt-1).time_from_start;
+    rclcpp::Duration t2=trj.points.at(iPnt).time_from_start;
+    double new_t=t1.seconds()+std::max(1.0e-5,t2.seconds()-t1.seconds());
+    rclcpp::Duration new_time(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(new_t)));
+    trj.points.at(iPnt).time_from_start=new_time;
+  }
   for  (unsigned int iAx=0;iAx<trj.points.at(0).positions.size();iAx++)
   {
     // p(t) = p(0)+v*t + 0.5*a*t^2
@@ -170,13 +189,17 @@ bool computeAccelerationVelocitySpline(trajectory_msgs::JointTrajectory& trj)
     // p(t1) = p(0)+v*t1+0.5*a*(t1^2)
     // p(t2) = p(0)+v*t2+0.5*a*(t2^2)
 
-//    [t1 0.5*t1^2]  [v] = [p(t1)-p(0)]
-//    [t2 0.5*t2^2]  [a] = [p(t2)-p(0)]
+    //    [t1 0.5*t1^2]  [v] = [p(t1)-p(0)]
+    //    [t2 0.5*t2^2]  [a] = [p(t2)-p(0)]
 
     for (unsigned int iPnt=1;iPnt<(trj.points.size()-1);iPnt++)
     {
-      double t1=trj.points.at(iPnt-1).time_from_start.toSec()-trj.points.at(iPnt).time_from_start.toSec();
-      double t2=trj.points.at(iPnt+1).time_from_start.toSec()-trj.points.at(iPnt).time_from_start.toSec();
+      rclcpp::Duration time_prev=trj.points.at(iPnt-1).time_from_start;
+      rclcpp::Duration time=trj.points.at(iPnt).time_from_start;
+      rclcpp::Duration time_post=trj.points.at(iPnt+1).time_from_start;
+
+      double t1=time_prev.seconds()-time.seconds();
+      double t2=time_post.seconds()-time.seconds();
 
       double dp1=trj.points.at(iPnt-1).positions.at(iAx)-trj.points.at(iPnt).positions.at(iAx);
       double dp2=trj.points.at(iPnt+1).positions.at(iAx)-trj.points.at(iPnt).positions.at(iAx);
@@ -198,7 +221,6 @@ bool computeAccelerationVelocitySpline(trajectory_msgs::JointTrajectory& trj)
 
   return true;
 }
-trajectory_msgs::JointTrajectory createDenseTrajectory(const trajectory_msgs::JointTrajectory& trj, double sampling_period);
 }
 
 

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <rclcpp/rclcpp.hpp>
+#include <rclcpp/logger.hpp>
 
 namespace name_sorting
 {

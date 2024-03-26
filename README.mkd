@@ -1,28 +1,61 @@
-# Name sorting provides functionalities to reorder vectors by names (www.stiima.cnr.it)
 
-## vector reordering by names
+# Name Sorting and Trajectory Processing Library
+
+Name Sorting provides functionalities to reorder vectors by names, developed by the [National Research Council of Italy, Institute of Intelligent Industrial Technologies and Systems for Advanced Manufacturing (STIIMA-CNR)](www.stiima.cnr.it).
+
+## Overview
+
+This library offers a set of functions to reorder data vectors according to a specified order of names. It's particularly useful in robotics and simulation environments where joint or trajectory data must be aligned with specific naming conventions. Additionally, the library includes functionalities to sort, append, and process robot trajectory messages, ensuring data integrity and consistency across different robotic platforms.
+
+## Features
+
+- **Vector Reordering by Names**: Sorts names and associated vectors (e.g., positions, velocities, efforts) according to a predefined order.
+- **Trajectory Sorting**: Allows the sorting of robot trajectories based on joint names.
+- **Trajectory Appending**: Facilitates the appending of two trajectories while maintaining the correct order of joints.
+- **Duplicate Removal**: Removes duplicate points from a trajectory to optimize execution.
+- **Velocity and Acceleration Computation**: Calculates the velocities and accelerations for trajectory points, providing essential data for motion control.
+
+
+
+## Usage
+
+Here are some basic examples of how to use the library functions:
+
+### Vector Reordering by Names
+
 ```c++
-  bool permutationName( const std::vector<std::string>& order_names, 
-                        std::vector<std::string>& names,
-                        std::vector<double>& vector1,
-                        std::vector<double>& vector2,
-                        std::vector<double>& vector3);
-  bool permutationName( const std::vector<std::string>& order_names, 
-                        std::vector<std::string>& names,
-                        std::vector<double>& vector1,
-                        std::vector<double>& vector2);
-  bool permutationName( const std::vector<std::string>& order_names, 
-                        std::vector<std::string>& names,
-                        std::vector<double>& vector1);
+#include "name_sorting/name_sorting.hpp"
+
+std::vector<std::string> order_names = {"joint3", "joint1", "joint2"};
+std::vector<std::string> names = {"joint1", "joint2", "joint3"};
+std::vector<double> vector1 = {1.0, 2.0, 3.0};
+std::vector<double> vector2 = {4.0, 5.0, 6.0};
+std::vector<double> vector3 = {7.0, 8.0, 9.0};
+
+bool success = name_sorting::permutationName(order_names, names, vector1, vector2, vector3);
 ```
 
-> _order_names_ names in the desired order
+### Trajectory Processing
 
-> _names_ current order of names
+```c++
+#include "trajectory_processing/sort_trajectories.hpp"
 
-> _vector1_, _vector2_, _vector3_ vectors to be reordered
+// Assume trj and trj_to_be_appended are populated trajectory_msgs::msg::JointTrajectory objects
+trajectory_msgs::msg::JointTrajectory sorted_trj;
+bool sorted = trajectory_processing::sort_trajectory(order_names, trj, sorted_trj);
 
+bool appended = trajectory_processing::append_trajectories(trj, trj_to_be_appended);
+```
 
-_Software License Agreement (BSD License)_    
-_Copyright (c) 2010, National Research Council of Italy, Institute of Intelligent Industrial Technologies and Systems for Advanced Manufacturing_    
-_All rights reserved._
+## Contributing
+
+We welcome contributions! Please submit pull requests or issues on GitHub to suggest enhancements or report bugs.
+
+## License
+
+Software License Agreement (BSD License)
+
+Copyright (c) 2024,
+National Research Council of Italy, Institute of Intelligent Industrial Technologies and Systems for Advanced Manufacturing
+
+All rights reserved.

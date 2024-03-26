@@ -1,38 +1,57 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(name_sorting)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cnrConfigMacros.cmake)
+# XXX CHECK ###
+#include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cnrConfigMacros.cmake)
+#cnr_set_flags()
 
-cnr_set_flags()
-###################
-
-find_package(catkin REQUIRED COMPONENTS roscpp trajectory_msgs)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(trajectory_msgs REQUIRED)
 find_package(Eigen3 REQUIRED COMPONENTS Core)
 
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES name_sorting
-  CATKIN_DEPENDS roscpp trajectory_msgs
-  DEPENDS 
-)
-
-include_directories(include ${catkin_INCLUDE_DIRS})
+set(ROS_VERSION $ENV{ROS_VERSION})
+if(ROS_VERSION STREQUAL "")
+  message(FATAL_ERROR "No supported version of ROS found!")
+endif()
 
 add_library(${PROJECT_NAME}
-              src/${PROJECT_NAME}/name_sorting.cpp src/${PROJECT_NAME}/sort_trajectories.cpp)
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${EIGEN_LIBRARIES} Eigen3::Eigen)
-add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-cnr_target_compile_options(${PROJECT_NAME})
+  src/${PROJECT_NAME}/name_sorting.cpp
+  src/${PROJECT_NAME}/sort_trajectories.cpp)
 
-install(TARGETS ${PROJECT_NAME} 
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DROS_X=${ROS_VERSION})
+
+ament_target_dependencies(${PROJECT_NAME} PUBLIC
+  rclcpp
+  trajectory_msgs)
+
+include_directories(
+   include
+   ${EIGEN3_INCLUDE_DIRS}
+ )
+target_link_libraries(${PROJECT_NAME} PUBLIC
+     Eigen3::Eigen
+    ${trajectory_msgs_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC
+"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+"$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
 )
 
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.h"
-  PATTERN ".svn" EXCLUDE
+install(
+  DIRECTORY include/
+  DESTINATION include/${PROJECT_NAME}
 )
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+install(TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
 
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_package()
