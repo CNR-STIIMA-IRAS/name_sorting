@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.5)
 project(name_sorting)
 
-# XXX CHECK ###
+
 #include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cnrConfigMacros.cmake)
 #cnr_set_flags()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rdyn_core REQUIRED)
 find_package(trajectory_msgs REQUIRED)
 find_package(Eigen3 REQUIRED COMPONENTS Core)
 
@@ -28,6 +29,7 @@ ament_target_dependencies(${PROJECT_NAME} PUBLIC
 include_directories(
    include
    ${EIGEN3_INCLUDE_DIRS}
+   ${rdyn_core_INCLUDE_DIRS}
  )
 target_link_libraries(${PROJECT_NAME} PUBLIC
      Eigen3::Eigen
