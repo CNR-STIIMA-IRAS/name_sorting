@@ -16,7 +16,7 @@ if(ROS_VERSION STREQUAL "")
   message(FATAL_ERROR "No supported version of ROS found!")
 endif()
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   src/${PROJECT_NAME}/name_sorting.cpp
   src/${PROJECT_NAME}/sort_trajectories.cpp)
 
@@ -26,18 +26,27 @@ ament_target_dependencies(${PROJECT_NAME} PUBLIC
   rclcpp
   trajectory_msgs)
 
-include_directories(
-   include
-   ${EIGEN3_INCLUDE_DIRS}
-   ${rdyn_core_INCLUDE_DIRS}
- )
+#include_directories(
+#   include
+#   ${EIGEN3_INCLUDE_DIRS}
+#   ${rdyn_core_INCLUDE_DIRS}
+# )
 target_link_libraries(${PROJECT_NAME} PUBLIC
-     Eigen3::Eigen
-    ${trajectory_msgs_LIBRARIES})
+    Eigen3::Eigen
+    rdyn_core::rdyn_core
+    #${trajectory_msgs_LIBRARIES}
+    )
 target_include_directories(${PROJECT_NAME} PUBLIC
 "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
 "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
 )
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(
+    rclcpp
+    trajectory_msgs
+    rdyn_core
+    Eigen3
+    )
 
 install(
   DIRECTORY include/
@@ -55,5 +64,4 @@ install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 
-ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_package()
