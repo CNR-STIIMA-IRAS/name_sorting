@@ -26,15 +26,9 @@ ament_target_dependencies(${PROJECT_NAME} PUBLIC
   rclcpp
   trajectory_msgs)
 
-#include_directories(
-#   include
-#   ${EIGEN3_INCLUDE_DIRS}
-#   ${rdyn_core_INCLUDE_DIRS}
-# )
 target_link_libraries(${PROJECT_NAME} PUBLIC
     Eigen3::Eigen
     rdyn_core::rdyn_core
-    #${trajectory_msgs_LIBRARIES}
     )
 target_include_directories(${PROJECT_NAME} PUBLIC
 "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
