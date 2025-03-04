@@ -7,7 +7,6 @@ project(name_sorting)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rdyn_core REQUIRED)
 find_package(trajectory_msgs REQUIRED)
 find_package(Eigen3 REQUIRED COMPONENTS Core)
 
@@ -28,7 +27,6 @@ ament_target_dependencies(${PROJECT_NAME} PUBLIC
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     Eigen3::Eigen
-    rdyn_core::rdyn_core
     )
 target_include_directories(${PROJECT_NAME} PUBLIC
 "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
@@ -38,7 +36,6 @@ ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(
     rclcpp
     trajectory_msgs
-    rdyn_core
     Eigen3
     )
 
